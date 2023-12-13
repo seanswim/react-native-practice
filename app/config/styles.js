@@ -6,6 +6,6 @@ export default {
   text: {
     color: colors.dark,
     fontSize: 18,
-    fontFamily: Platform.OS === "android" ? "Robooto" : "Anveir",
+    fontFamily: Platform.OS === "android" ? "Robooto" : "Avenir",
   },
 };
