@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import * as Yup from "yup";
 
@@ -10,8 +10,10 @@ import {
   SubmitButton,
 } from "../components/forms";
 import CategoryPickerItem from "../components/CategoryPickerItem";
+import ImageInputList from "../components/ImageInputList";
 
 const validationSchema = Yup.object().shape({
+  image: Yup.string().required().label("Image"),
   title: Yup.string().required().min(1).label("Title"),
   price: Yup.number().required().min(1).max(10000).label("Price"),
   description: Yup.string().label("Description"),
@@ -44,10 +46,18 @@ const categories = [
 ];
 
 function ListingEditScreen(props) {
+  const [imageUris, setImageUris] = useState([]);
+  const onAddImage = (uri, index) => {
+    const arr = [...imageUris];
+    arr.push(uri);
+    if (!index) setImageUris(arr);
+  };
+
   return (
     <Screen style={styles.container}>
       <AppForm
         initialValues={{
+          image: null,
           title: "",
           price: "",
           description: "",
@@ -56,6 +66,7 @@ function ListingEditScreen(props) {
         onSubmit={(values) => console.log(values)}
         validationSchema={validationSchema}
       >
+        <ImageInputList imageUris={imageUris} onAddImage={onAddImage} />
         <AppFormField maxLength={255} name="title" placeholder="Title" />
         <AppFormField
           keyboardType="numeric"
