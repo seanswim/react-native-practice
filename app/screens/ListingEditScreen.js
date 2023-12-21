@@ -47,10 +47,13 @@ const categories = [
 
 function ListingEditScreen(props) {
   const [imageUris, setImageUris] = useState([]);
-  const onAddImage = (uri, index) => {
-    const arr = [...imageUris];
-    arr.push(uri);
-    if (!index) setImageUris(arr);
+
+  const handleAdd = (uri) => {
+    setImageUris([...imageUris, uri]);
+  };
+
+  const handleRemove = (uri) => {
+    setImageUris(imageUris.filter((imageUris) => imageUris !== uri));
   };
 
   return (
@@ -66,7 +69,11 @@ function ListingEditScreen(props) {
         onSubmit={(values) => console.log(values)}
         validationSchema={validationSchema}
       >
-        <ImageInputList imageUris={imageUris} onAddImage={onAddImage} />
+        <ImageInputList
+          imageUris={imageUris}
+          onAddImage={handleAdd}
+          onRemoveImage={handleRemove}
+        />
         <AppFormField maxLength={255} name="title" placeholder="Title" />
         <AppFormField
           keyboardType="numeric"

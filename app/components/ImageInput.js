@@ -1,5 +1,5 @@
-import React from "react";
-import { Image, Text, TouchableHighlight, View } from "react-native";
+import { useEffect } from "react";
+import { Alert, Image, TouchableWithoutFeedback, View } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -7,12 +7,30 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../config/colors";
 
 function ImageInput({ imageUri, onChangeImage }) {
-  const selectImage = async () => {
+  useEffect(() => {
+    requestPermission();
+  }, []);
+
+  const requestPermission = async () => {
     const { granted } = await ImagePicker.requestCameraPermissionsAsync();
     if (!granted) alert("You need to enable permission to access the library");
+  };
 
+  const handlePress = async () => {
+    if (!imageUri) selectImage();
+    else
+      Alert.alert("Delete", "Are you sure you want to delete this image?", [
+        { text: "Yes", onPress: () => onChangeImage(null) },
+        { text: "No" },
+      ]);
+  };
+
+  const selectImage = async () => {
     try {
-      const result = await ImagePicker.launchImageLibraryAsync();
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 0.5,
+      });
       if (!result.canceled) onChangeImage(result.assets[0].uri);
     } catch (error) {
       console.log("Error reading an image", error);
@@ -20,38 +38,32 @@ function ImageInput({ imageUri, onChangeImage }) {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableHighlight onPress={selectImage} style={styles.button}>
-        {imageUri ? (
-          <Image source={{ uri: imageUri }} style={styles.image} />
-        ) : (
+    <TouchableWithoutFeedback onPress={handlePress}>
+      <View style={styles.container}>
+        {imageUri && <Image source={{ uri: imageUri }} style={styles.image} />}
+        {!imageUri && (
           <MaterialCommunityIcons
             name="camera"
-            size={45}
+            size={40}
             color={colors.medium}
           />
         )}
-      </TouchableHighlight>
-    </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.light,
-    borderRadius: 20,
-    height: 90,
-    width: 90,
-  },
-  button: {
-    borderRadius: 20,
-    justifyContent: "center",
     alignItems: "center",
-    height: "100%",
-    width: "100%",
+    backgroundColor: colors.light,
+    borderRadius: 15,
+    height: 100,
+    justifyContent: "center",
+    overflow: "hidden",
+    width: 100,
   },
   image: {
-    borderRadius: 20,
     height: "100%",
     width: "100%",
   },
