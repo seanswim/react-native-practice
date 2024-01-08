@@ -57,22 +57,27 @@ function ListingEditScreen(props) {
   const [uploadVisible, setUploadVisible] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  const handleSubmit = async (listing) => {
+  const handleSubmit = async (listing, { resetFrom }) => {
     setProgress(0);
     setUploadVisible(true);
     const result = await addListings.request(
       { ...listing, location },
       (progress) => setProgress(progress)
     );
-    setUploadVisible(false);
-    console.log(result);
-    if (!result) return alert("Could not save the listing");
-    alert("Success");
+    if (!result) {
+      setUploadVisible(false);
+      return alert("Could not save the listing");
+    }
+    resetFrom();
   };
 
   return (
     <Screen style={styles.container}>
-      <UploadScreen progress={progress} visible={uploadVisible} />
+      <UploadScreen
+        onDone={() => setUploadVisible(false)}
+        progress={progress}
+        visible={uploadVisible}
+      />
       <AppForm
         initialValues={{
           images: [],
