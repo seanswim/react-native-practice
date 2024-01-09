@@ -19,7 +19,7 @@ function WelcomeScreen({ navigation }) {
         <AppButton
           title="register"
           color="secondary"
-          onPress={() => console.log("tapped")}
+          onPress={() => navigation.navigate("Register")}
         />
       </View>
     </ImageBackground>
