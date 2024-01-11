@@ -10,6 +10,7 @@ import OfflineNotice from "./app/components/OfflineNotice";
 import { useState } from "react";
 import AuthContext from "./app/auth/context";
 import authStorage from "./app/auth/storage";
+import { navigationRef } from "./app/navigation/rootNavigation";
 
 export default function App() {
   const [user, setUser] = useState();
@@ -33,7 +34,7 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NotifierWrapper>
         <AuthContext.Provider value={{ user, setUser }}>
-          <NavigationContainer theme={navigationTheme}>
+          <NavigationContainer ref={navigationRef} theme={navigationTheme}>
             <OfflineNotice />
             {user ? <AppNavigator /> : <AuthNavigator />}
           </NavigationContainer>
